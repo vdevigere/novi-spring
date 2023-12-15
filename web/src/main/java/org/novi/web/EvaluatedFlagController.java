@@ -37,13 +37,14 @@ public class EvaluatedFlagController {
         logger.debug("Id: {}", id);
         Flag flag = flagRepository.findById(id).orElse(null);
         if (flag != null) {
-            boolean resultingStatus = flag.isStatus();
+            Boolean resultingStatus = null;
             for (ActivationConfig activationConfig : flag.getActivationConfigs()) {
+                logger.debug("Checking for activation:{}", activationConfig.getName());
                 BaseActivation activation = foundActivations.get(activationConfig.getName());
                 if (activation != null) {
-                    boolean evaluatedStatus = activation.whenConfiguredWith(activationConfig.getConfig()).evaluateFor(context);
+                    Boolean evaluatedStatus = activation.whenConfiguredWith(activationConfig.getConfig()).evaluateFor(context);
                     logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), resultingStatus, evaluatedStatus);
-                    resultingStatus &= evaluatedStatus;
+                    resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus & evaluatedStatus;
                 }
             }
             logger.debug("Final Status: {}", resultingStatus);

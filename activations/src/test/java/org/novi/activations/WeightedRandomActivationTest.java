@@ -1,10 +1,10 @@
 package org.novi.activations;
 
+import org.apache.commons.math3.util.Pair;
+import org.junit.jupiter.api.Test;
 import org.novi.core.activations.BaseConfiguredActivation;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.core.exceptions.ContextParseException;
-import org.apache.commons.math3.util.Pair;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

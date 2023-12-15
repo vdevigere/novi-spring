@@ -1,7 +1,7 @@
 package org.novi.web;
 
-import org.novi.core.activations.BaseActivation;
 import org.junit.jupiter.api.Test;
+import org.novi.core.activations.BaseActivation;
 
 import java.util.Map;
 

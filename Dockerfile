@@ -1,10 +1,15 @@
-FROM eclipse-temurin:17-jdk-alpine as build
+FROM eclipse-temurin:21-jdk-alpine as compile
 WORKDIR /workspace/novi-app
-COPY . .
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+COPY activations activations
+COPY core core
+COPY persistence persistence
+COPY web web
 RUN ./mvnw clean install -DskipTests
-
-
-FROM eclipse-temurin:17-jre-alpine
 ARG JAR_FILE=web/target/*.jar
 COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar ${0} ${@}"]
+
+FROM compile as start
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar app.jar ${0} ${@}"]

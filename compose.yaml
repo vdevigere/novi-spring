@@ -2,7 +2,7 @@ services:
   web:
     container_name: novi-web
     restart: always
-    depends_on: [postgres]
+    depends_on: [ postgres ]
     build: .
     volumes:
       - ./plugin-activations:/var/plugin-activations

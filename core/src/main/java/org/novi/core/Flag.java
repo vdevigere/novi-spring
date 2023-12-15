@@ -15,7 +15,8 @@ public class Flag {
     @Column(unique = true)
     private String name;
 
-    private boolean status;
+    @Transient
+    private Boolean status;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<ActivationConfig> activationConfigs;
@@ -44,11 +45,11 @@ public class Flag {
         this.activationConfigs = activationConfigs;
     }
 
-    public boolean isStatus() {
+    public Boolean isStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 }

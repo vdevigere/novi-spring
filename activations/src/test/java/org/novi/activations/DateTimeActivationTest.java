@@ -1,8 +1,8 @@
 package org.novi.activations;
 
+import org.junit.jupiter.api.Test;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.core.exceptions.ContextParseException;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -3,13 +3,13 @@ package org.novi.activations;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.novi.core.activations.BaseActivation;
-import org.novi.core.activations.BaseConfiguredActivation;
-import org.novi.core.exceptions.ConfigurationParseException;
 import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.util.Pair;
+import org.novi.core.activations.BaseActivation;
+import org.novi.core.activations.BaseConfiguredActivation;
+import org.novi.core.exceptions.ConfigurationParseException;
 
 import java.util.List;
 import java.util.Map;
