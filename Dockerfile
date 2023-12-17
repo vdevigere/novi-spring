@@ -9,7 +9,7 @@ COPY persistence persistence
 COPY web web
 RUN ./mvnw clean install -DskipTests
 ARG JAR_FILE=web/target/*.jar
-COPY ${JAR_FILE} app.jar
+RUN cp ${JAR_FILE} app.jar
 
 FROM compile as start
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar app.jar ${0} ${@}"]
