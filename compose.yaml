@@ -17,6 +17,8 @@ services:
     image: "postgres:15.5"
     container_name: "novi-postgres"
     restart: always
+    volumes:
+      - ./db-init-scripts:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
     environment:
