@@ -32,7 +32,7 @@ public class WeightedRandomActivation implements BaseActivation {
             return new BaseConfiguredActivation<>(sampleSet) {
 
                 @Override
-                public boolean evaluateFor(Map<String, Object> context) {
+                public Boolean evaluateFor(Map<String, Object> context) {
                     Map<String, Object> contextMap = (Map<String, Object>) context.get(WeightedRandomActivation.this.getName());
                     int seed = (int) contextMap.get("seed");
                     String variantToCheck = (String) contextMap.get("variantToCheck");

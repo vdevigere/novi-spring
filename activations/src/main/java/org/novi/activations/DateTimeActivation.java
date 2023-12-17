@@ -36,7 +36,7 @@ public class DateTimeActivation implements BaseActivation {
             return new BaseConfiguredActivation<>(dateTimeActivationConfigRecord) {
 
                 @Override
-                public boolean evaluateFor(Map<String, Object> context) {
+                public Boolean evaluateFor(Map<String, Object> context) {
                     SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
                     try {
                         Date currentDateTime = df.parse((String) context.get(DateTimeActivation.this.getName() + ".currentDateTime"));

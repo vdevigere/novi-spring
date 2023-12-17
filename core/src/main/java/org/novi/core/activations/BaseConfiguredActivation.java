@@ -16,7 +16,7 @@ public abstract class BaseConfiguredActivation<T> {
         this.configuration = configuration;
     }
 
-    public final boolean evaluateFor(String context) throws ContextParseException {
+    public final Boolean evaluateFor(String context) throws ContextParseException {
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
         ObjectMapper mapper = new ObjectMapper();
@@ -27,7 +27,7 @@ public abstract class BaseConfiguredActivation<T> {
         }
     }
 
-    public abstract boolean evaluateFor(Map<String, Object> context);
+    public abstract Boolean evaluateFor(Map<String, Object> context);
 
     public T getConfiguration() {
         return configuration;

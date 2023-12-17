@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/evaluatedFlags")
 public class EvaluatedFlagController {
+    private final ApplicationContext applicationContext;
     Logger logger = LoggerFactory.getLogger(EvaluatedFlagController.class);
 
     private final FlagRepository flagRepository;
@@ -27,9 +30,10 @@ public class EvaluatedFlagController {
 
     public EvaluatedFlagController(@Autowired FlagRepository flagRepository,
                                    @Autowired
-                                   @Qualifier("foundActivations") Map<String, BaseActivation> foundActivations) {
+                                   @Qualifier("foundActivations") Map<String, BaseActivation> foundActivations, @Autowired ApplicationContext applicationContext) {
         this.flagRepository = flagRepository;
         this.foundActivations = foundActivations;
+        this.applicationContext = applicationContext;
     }
 
     @GetMapping("/{id}")
@@ -42,6 +46,9 @@ public class EvaluatedFlagController {
                 logger.debug("Checking for activation:{}", activationConfig.getName());
                 BaseActivation activation = foundActivations.get(activationConfig.getName());
                 if (activation != null) {
+                    if (activation instanceof ApplicationContextAware){
+                        ((ApplicationContextAware) activation).setApplicationContext(applicationContext);
+                    }
                     Boolean evaluatedStatus = activation.whenConfiguredWith(activationConfig.getConfig()).evaluateFor(context);
                     logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), resultingStatus, evaluatedStatus);
                     resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus & evaluatedStatus;
