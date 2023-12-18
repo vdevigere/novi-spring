@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContextAware;
 import java.util.Map;
 
 public class ComboBooleanActivations implements BaseActivation, ApplicationContextAware {
-    private Iterable<ActivationConfig> activationConfigs;
     private enum OPERATION{
         AND, OR
     };
@@ -49,7 +48,7 @@ public class ComboBooleanActivations implements BaseActivation, ApplicationConte
     }
 
     public BaseConfiguredActivation<Iterable<ActivationConfig>> whenConfiguredWith(ConfigRecord configMap) throws ConfigurationParseException {
-        this.activationConfigs = activationConfigRepository.findAllById(configMap.activationIds);
+        Iterable<ActivationConfig> activationConfigs = activationConfigRepository.findAllById(configMap.activationIds);
         return new BaseConfiguredActivation<>(activationConfigs) {
             @Override
             public Boolean evaluateFor(Map<String, Object> context) {

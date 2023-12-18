@@ -12,13 +12,6 @@ public class FlagController {
     @Autowired
     FlagRepository flagRepository;
 
-
-    @PostMapping
-    public Flag createFlag(@RequestBody Flag flagDAO) {
-        flagRepository.save(flagDAO);
-        return flagDAO;
-    }
-
     @GetMapping
     public Iterable<Flag> getFlags() {
         return flagRepository.findAll();
