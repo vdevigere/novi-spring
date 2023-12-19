@@ -17,11 +17,6 @@ import java.util.Map;
 public class WeightedRandomActivation implements BaseActivation {
 
     @Override
-    public String getName() {
-        return this.getClass().getCanonicalName();
-    }
-
-    @Override
     public BaseConfiguredActivation<List<Pair<String, Double>>> whenConfiguredWith(String configuration) throws ConfigurationParseException {
         try {
             TypeReference<Map<String, Double>> tref = new TypeReference<>() {
@@ -33,7 +28,7 @@ public class WeightedRandomActivation implements BaseActivation {
 
                 @Override
                 public Boolean evaluateFor(Map<String, Object> context) {
-                    Map<String, Object> contextMap = (Map<String, Object>) context.get(WeightedRandomActivation.this.getName());
+                    Map<String, Object> contextMap = (Map<String, Object>) context.get(getName());
                     int seed = (int) contextMap.get("seed");
                     String variantToCheck = (String) contextMap.get("variantToCheck");
                     RandomGenerator rnd = new JDKRandomGenerator(seed);

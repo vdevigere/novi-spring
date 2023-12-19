@@ -24,11 +24,6 @@ public class DateTimeActivation implements BaseActivation {
     }
 
     @Override
-    public String getName() {
-        return this.getClass().getCanonicalName();
-    }
-
-    @Override
     public BaseConfiguredActivation<DateTimeActivationConfigRecord> whenConfiguredWith(String configuration) throws ConfigurationParseException {
         try {
             DateTimeActivationConfigRecord dateTimeActivationConfigRecord = mapper().readValue(configuration, new TypeReference<>() {
@@ -39,7 +34,7 @@ public class DateTimeActivation implements BaseActivation {
                 public Boolean evaluateFor(Map<String, Object> context) {
                     SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
                     try {
-                        Date currentDateTime = df.parse((String) context.get(DateTimeActivation.this.getName() + ".currentDateTime"));
+                        Date currentDateTime = df.parse((String) context.get(getName() + ".currentDateTime"));
                         logger.debug("Checking for {} <= {} < {}", this.getConfiguration().startDateTime, currentDateTime, this.getConfiguration().endDateTime);
                         return this.getConfiguration().startDateTime().compareTo(currentDateTime) <= 0 && this.getConfiguration().endDateTime().compareTo(currentDateTime) > 0;
                     } catch (ParseException e) {

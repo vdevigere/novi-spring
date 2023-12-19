@@ -6,7 +6,9 @@ import org.novi.core.Flag;
 import org.novi.core.activations.BaseActivation;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.core.exceptions.ContextParseException;
+import org.novi.persistence.ActivationConfigRepository;
 import org.novi.persistence.FlagRepository;
+import org.novi.web.activations.ComboBooleanActivations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,33 +29,26 @@ public class EvaluatedFlagController {
 
 
     private final Map<String, BaseActivation> foundActivations;
+    private final ActivationConfigRepository activationConfigRepository;
 
     public EvaluatedFlagController(@Autowired FlagRepository flagRepository,
                                    @Autowired
-                                   @Qualifier("foundActivations") Map<String, BaseActivation> foundActivations, @Autowired ApplicationContext applicationContext) {
+                                   @Qualifier("foundActivations") Map<String, BaseActivation> foundActivations,
+                                   @Autowired ApplicationContext applicationContext,
+                                   @Autowired ActivationConfigRepository activationConfigRepository) {
         this.flagRepository = flagRepository;
         this.foundActivations = foundActivations;
         this.applicationContext = applicationContext;
+        this.activationConfigRepository = activationConfigRepository;
     }
 
     @GetMapping("/{id}")
-    public Flag getEvaluatedFlagById(@PathVariable(name = "id") Long id, @RequestBody String context) throws ConfigurationParseException, ContextParseException {
+    public Flag getEvaluatedFlagById(@PathVariable(name = "id") Long id, @RequestBody String context) throws ContextParseException {
         logger.debug("Id: {}", id);
         Flag flag = flagRepository.findById(id).orElse(null);
         if (flag != null) {
-            Boolean resultingStatus = null;
-            for (ActivationConfig activationConfig : flag.getActivationConfigs()) {
-                logger.debug("Checking for activation:{}", activationConfig.getName());
-                BaseActivation activation = foundActivations.get(activationConfig.getName());
-                if (activation != null) {
-                    if (activation instanceof ApplicationContextAware){
-                        ((ApplicationContextAware) activation).setApplicationContext(applicationContext);
-                    }
-                    Boolean evaluatedStatus = activation.whenConfiguredWith(activationConfig.getConfig()).evaluateFor(context);
-                    logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), resultingStatus, evaluatedStatus);
-                    resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus & evaluatedStatus;
-                }
-            }
+            ComboBooleanActivations comboBooleanActivations = new ComboBooleanActivations(applicationContext, activationConfigRepository, foundActivations);
+            Boolean resultingStatus = comboBooleanActivations.whenConfiguredWith(flag.getActivationConfigs(), ComboBooleanActivations.OPERATION.AND).evaluateFor(context);
             logger.debug("Final Status: {}", resultingStatus);
             flag.setStatus(resultingStatus);
         }
