@@ -1,10 +1,14 @@
 package org.novi.web;
 
 import org.novi.core.activations.BaseActivation;
+import org.novi.persistence.ActivationConfigRepository;
+import org.novi.web.activations.ComboBooleanActivations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -55,5 +59,10 @@ public class NoviConfiguration {
             logger.debug("No Activations found...");
         }
         return found;
+    }
+
+    @Bean
+    public ComboBooleanActivations comboBooleanActivations(@Autowired ApplicationContext applicationContext, @Autowired ActivationConfigRepository activationConfigRepository) {
+        return new ComboBooleanActivations(applicationContext, activationConfigRepository, foundActivations());
     }
 }

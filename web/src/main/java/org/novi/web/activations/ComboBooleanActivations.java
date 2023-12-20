@@ -10,11 +10,9 @@ import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.persistence.ActivationConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import java.util.Map;
 
@@ -38,7 +36,7 @@ public class ComboBooleanActivations implements BaseActivation {
         this.foundActivations = foundActivations;
     }
 
-    public ComboBooleanActivations(){
+    public ComboBooleanActivations() {
 
     }
 
@@ -70,7 +68,7 @@ public class ComboBooleanActivations implements BaseActivation {
         return whenConfiguredWith(activationConfigs, configMap.operation());
     }
 
-    public BaseConfiguredActivation<Iterable<ActivationConfig>> whenConfiguredWith(Iterable<ActivationConfig> activationConfigs, OPERATION operation){
+    public BaseConfiguredActivation<Iterable<ActivationConfig>> whenConfiguredWith(Iterable<ActivationConfig> activationConfigs, OPERATION operation) {
         return new BaseConfiguredActivation<>(activationConfigs) {
             @Override
             public Boolean evaluateFor(Map<String, Object> context) {

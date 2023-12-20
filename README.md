@@ -8,7 +8,7 @@ The architecture and APIs are more or less similar.
 
 If you have docker, run `docker compose up` in the parent directory, which executes the following steps
 
-- The script downloads the postgresql image 
+- The script downloads the postgresql image
 - and builds the code and executes it while connecting to the postgres instance.
 - Creates tables and sample data from the db-init-scripts folder is inserted into the tables
 

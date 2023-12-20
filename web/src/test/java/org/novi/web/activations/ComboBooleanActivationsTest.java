@@ -64,7 +64,7 @@ public class ComboBooleanActivationsTest {
         ActivationConfigRepository mockRepository = mock(ActivationConfigRepository.class);
         when(mockRepository.findAllById(Mockito.any())).thenReturn(activationConfigs);
         ApplicationContext mockApplicationContext = mock(ApplicationContext.class, Answers.RETURNS_DEEP_STUBS);
-        ComboBooleanActivations cmb = new ComboBooleanActivations(mockApplicationContext,mockRepository, foundActivations);
+        ComboBooleanActivations cmb = new ComboBooleanActivations(mockApplicationContext, mockRepository, foundActivations);
         ComboBooleanActivations.ConfigRecord configMapAND = new ComboBooleanActivations.ConfigRecord(Arrays.asList(1L, 2L), ComboBooleanActivations.OPERATION.AND);
         ComboBooleanActivations.ConfigRecord configMapOR = new ComboBooleanActivations.ConfigRecord(Arrays.asList(1L, 2L), ComboBooleanActivations.OPERATION.OR);
 
