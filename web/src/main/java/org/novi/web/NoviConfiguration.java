@@ -1,43 +1,38 @@
 package org.novi.web;
 
 import org.novi.core.activations.BaseActivation;
+import org.novi.core.activations.FoundActivations;
 import org.novi.persistence.ActivationConfigRepository;
 import org.novi.web.activations.ComboBooleanActivations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 @Configuration
 public class NoviConfiguration {
 
-
-    private final String plugin_dir;
     Logger logger = LoggerFactory.getLogger(NoviConfiguration.class);
 
-    public NoviConfiguration(@Value("${activations.plugin.dir}") String plugin_dir) {
-        this.plugin_dir = plugin_dir;
+    public NoviConfiguration(@Value("${activations.plugin.dir}") String plugin_dir, @Autowired ApplicationContext applicationContext) {
+        registerActivations(plugin_dir, applicationContext);
     }
 
-    @Bean
-    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public Map<String, BaseActivation> foundActivations() {
+
+    public void registerActivations(String plugin_dir, ApplicationContext applicationContext) {
         logger.debug("Loading plugins from: {}", plugin_dir);
-        Map<String, BaseActivation> found = new HashMap<>();
+        Map<String, BaseActivation> registry = FoundActivations.REGISTRY.getMap();
         ServiceLoader<BaseActivation> loader = ServiceLoader.load(BaseActivation.class);
         File pluginDir = new File(plugin_dir);
         File[] fList = pluginDir.listFiles(file -> file.getPath().toLowerCase().endsWith(".jar"));
@@ -53,16 +48,16 @@ public class NoviConfiguration {
         }
         for (BaseActivation activation : loader) {
             logger.debug("Found Activation: {}", activation.getClass().getCanonicalName());
-            found.put(activation.getClass().getCanonicalName(), activation);
+            if(applicationContext != null) applicationContext.getAutowireCapableBeanFactory().autowireBean(activation);
+            registry.put(activation.getClass().getCanonicalName(), activation);
         }
-        if (found.isEmpty()) {
+        if (registry.isEmpty()) {
             logger.debug("No Activations found...");
         }
-        return found;
     }
 
     @Bean
-    public ComboBooleanActivations comboBooleanActivations(@Autowired ApplicationContext applicationContext, @Autowired ActivationConfigRepository activationConfigRepository) {
-        return new ComboBooleanActivations(applicationContext, activationConfigRepository, foundActivations());
+    public ComboBooleanActivations comboBooleanActivations(@Autowired ActivationConfigRepository activationConfigRepository) {
+        return new ComboBooleanActivations(activationConfigRepository);
     }
 }

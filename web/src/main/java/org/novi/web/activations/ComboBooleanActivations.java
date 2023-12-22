@@ -6,36 +6,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.novi.core.ActivationConfig;
 import org.novi.core.activations.BaseActivation;
 import org.novi.core.activations.BaseConfiguredActivation;
+import org.novi.core.activations.FoundActivations;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.persistence.ActivationConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 
 import java.util.Map;
 
 public class ComboBooleanActivations implements BaseActivation {
 
     @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
     private ActivationConfigRepository activationConfigRepository;
 
-    @Autowired
-    @Qualifier("foundActivations")
-    private Map<String, BaseActivation> foundActivations;
+    private final Map<String, BaseActivation> foundActivations = FoundActivations.REGISTRY.getMap();
 
     Logger logger = LoggerFactory.getLogger(ComboBooleanActivations.class);
 
-    public ComboBooleanActivations(ApplicationContext applicationContext, ActivationConfigRepository activationConfigRepository, Map<String, BaseActivation> foundActivations) {
-        this.applicationContext = applicationContext;
+    public ComboBooleanActivations(ActivationConfigRepository activationConfigRepository) {
         this.activationConfigRepository = activationConfigRepository;
-        this.foundActivations = foundActivations;
     }
 
+    // Needed for ServiceLoader
     public ComboBooleanActivations() {
 
     }
@@ -76,7 +69,6 @@ public class ComboBooleanActivations implements BaseActivation {
                 for (ActivationConfig activationConfig : activationConfigs) {
                     BaseActivation activation = foundActivations.get(activationConfig.getName());
                     if (activation != null) {
-                        applicationContext.getAutowireCapableBeanFactory().autowireBean(activation);
                         try {
                             Boolean evaluatedStatus = activation.whenConfiguredWith(activationConfig.getConfig()).evaluateFor(context);
                             Boolean originalStatus = resultingStatus;
