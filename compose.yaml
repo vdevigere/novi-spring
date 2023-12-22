@@ -1,9 +1,9 @@
 services:
   web:
-    container_name: novi-web
+    container_name: novi-app
     restart: always
     depends_on: [ postgres ]
-    build: .
+    build: novi-app/.
     volumes:
       - ./plugin-activations:/var/plugin-activations
     ports:

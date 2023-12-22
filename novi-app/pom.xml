@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.novi</groupId>
-    <artifactId>novi</artifactId>
+    <artifactId>novi-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>A Feature Flag platform</description>

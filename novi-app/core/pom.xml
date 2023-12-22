@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.novi</groupId>
-        <artifactId>novi</artifactId>
+        <artifactId>novi-app</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
