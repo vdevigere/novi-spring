@@ -2,6 +2,7 @@ package org.novi.activations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.novi.core.activations.BaseActivation;
 import org.novi.core.exceptions.ConfigurationParseException;
@@ -25,7 +26,7 @@ public class DateTimeActivation implements BaseActivation<DateTimeActivation.Dat
     }
 
     @Override
-    public DateTimeActivation setConfiguration(String configuration) throws ConfigurationParseException {
+    public DateTimeActivation configuration(String configuration) throws ConfigurationParseException {
         try {
             this.configuration = mapper().readValue(configuration, new TypeReference<>() {
             });
@@ -36,19 +37,29 @@ public class DateTimeActivation implements BaseActivation<DateTimeActivation.Dat
     }
 
     @Override
+    public Boolean apply(String context){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(context);
+            Map<String, Object> contextMap = mapper.treeToValue(root, Map.class);
+            return evaluateFor(contextMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public Boolean evaluateFor(Map<String, Object> context) {
         SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
         try {
             Date currentDateTime = df.parse((String) context.get(getName() + ".currentDateTime"));
-            logger.debug("Checking for {} <= {} < {}", this.getConfiguration().startDateTime, currentDateTime, this.getConfiguration().endDateTime);
-            return this.getConfiguration().startDateTime().compareTo(currentDateTime) <= 0 && this.getConfiguration().endDateTime().compareTo(currentDateTime) > 0;
+            logger.debug("Checking for {} <= {} < {}", this.configuration().startDateTime, currentDateTime, this.configuration().endDateTime);
+            return this.configuration().startDateTime().compareTo(currentDateTime) <= 0 && this.configuration().endDateTime().compareTo(currentDateTime) > 0;
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public DateTimeActivationConfigRecord getConfiguration() {
+    public DateTimeActivationConfigRecord configuration() {
         return configuration;
     }
 

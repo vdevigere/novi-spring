@@ -1,8 +1,6 @@
 package org.novi.web;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.novi.core.Flag;
 import org.novi.core.exceptions.ContextParseException;
 import org.novi.persistence.FlagRepository;
@@ -11,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/evaluatedFlags")
@@ -34,7 +30,7 @@ public class EvaluatedFlagController {
         logger.debug("Id: {}", id);
         Flag flag = flagRepository.findById(id).orElse(null);
         if (flag != null) {
-            Boolean resultingStatus = comboBooleanActivations.whenConfiguredWith(flag.getActivationConfigs(), ComboBooleanActivations.OPERATION.AND).evaluateFor(context);
+            Boolean resultingStatus = comboBooleanActivations.whenConfiguredWith(flag.getActivationConfigs(), ComboBooleanActivations.OPERATION.AND).apply(context);
             logger.debug("Final Status: {}", resultingStatus);
             flag.setStatus(resultingStatus);
         }

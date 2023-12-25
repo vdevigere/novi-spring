@@ -19,8 +19,8 @@ class WeightedRandomActivationTest {
                 "SampleC":25.0
                 }
                 """;
-        WeightedRandomActivation retVal = wra.setConfiguration(config);
-        assertThat(retVal.getConfiguration()).contains(Pair.create("SampleA", 50.0), Pair.create("SampleB", 25.0), Pair.create("SampleC", 25.0));
+        WeightedRandomActivation retVal = wra.configuration(config);
+        assertThat(retVal.configuration()).contains(Pair.create("SampleA", 50.0), Pair.create("SampleB", 25.0), Pair.create("SampleC", 25.0));
     }
 
     @Test
@@ -41,7 +41,7 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """;
-        assertThat(wra.setConfiguration(config).evaluateFor(context)).isTrue();
+        assertThat(wra.configuration(config).apply(context)).isTrue();
     }
 
     @Test
@@ -62,6 +62,6 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """;
-        assertThat(wra.setConfiguration(config).evaluateFor(context)).isFalse();
+        assertThat(wra.configuration(config).apply(context)).isFalse();
     }
 }

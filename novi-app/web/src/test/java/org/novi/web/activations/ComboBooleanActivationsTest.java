@@ -1,5 +1,8 @@
 package org.novi.web.activations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -9,7 +12,6 @@ import org.novi.core.activations.FoundActivations;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.persistence.ActivationConfigRepository;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -22,38 +24,50 @@ public class ComboBooleanActivationsTest {
         private String config;
 
         @Override
-        public BaseActivation<String> setConfiguration(String configuration) throws ConfigurationParseException {
+        public BaseActivation<String> configuration(String configuration) throws ConfigurationParseException {
             this.config = configuration;
             return this;
         }
 
         @Override
-        public Boolean evaluateFor(Map<String, Object> context) {
+        public Boolean apply(String context) {
             return true;
         }
 
+
+
         @Override
-        public String getConfiguration() {
+        public String configuration() {
             return config;
         }
     };
 
-    BaseActivation<String> alwaysFalse = new BaseActivation<>() {
+    BaseActivation<String> alwaysFalse = new BaseActivation<String>() {
         private String config;
 
         @Override
-        public BaseActivation<String> setConfiguration(String configuration) throws ConfigurationParseException {
+        public BaseActivation<String> configuration(String configuration) throws ConfigurationParseException {
             this.config = configuration;
             return this;
         }
 
         @Override
+        public Boolean apply(String context){
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root = mapper.readTree(context);
+                Map<String, Object> contextMap = mapper.treeToValue(root, Map.class);
+                return evaluateFor(contextMap);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
         public Boolean evaluateFor(Map<String, Object> context) {
             return false;
         }
 
         @Override
-        public String getConfiguration() {
+        public String configuration() {
             return config;
         }
     };
@@ -74,9 +88,9 @@ public class ComboBooleanActivationsTest {
         List<ActivationConfig> activationConfigs = Arrays.asList(a, b);
         ActivationConfigRepository mockRepository = null;
         ComboBooleanActivations cmb = new ComboBooleanActivations(mockRepository);
-        Boolean andResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.AND).evaluateFor(Collections.EMPTY_MAP);
+        Boolean andResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.AND).apply("{}");
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.OR).evaluateFor(Collections.EMPTY_MAP);
+        Boolean orResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.OR).apply("{}");
         assertThat(orResult).isTrue();
     }
 
@@ -93,9 +107,9 @@ public class ComboBooleanActivationsTest {
         ComboBooleanActivations.ConfigRecord configMapAND = new ComboBooleanActivations.ConfigRecord(Arrays.asList(1L, 2L), ComboBooleanActivations.OPERATION.AND);
         ComboBooleanActivations.ConfigRecord configMapOR = new ComboBooleanActivations.ConfigRecord(Arrays.asList(1L, 2L), ComboBooleanActivations.OPERATION.OR);
 
-        Boolean andResult = cmb.whenConfiguredWith(configMapAND).evaluateFor(Collections.EMPTY_MAP);
+        Boolean andResult = cmb.whenConfiguredWith(configMapAND).apply("{}");
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.whenConfiguredWith(configMapOR).evaluateFor(Collections.EMPTY_MAP);
+        Boolean orResult = cmb.whenConfiguredWith(configMapOR).apply("{}");
         assertThat(orResult).isTrue();
     }
 
@@ -110,19 +124,19 @@ public class ComboBooleanActivationsTest {
         when(mockRepository.findAllById(Mockito.any())).thenReturn(activationConfigs);
         ComboBooleanActivations cmb = new ComboBooleanActivations(mockRepository);
 
-        Boolean andResult = cmb.setConfiguration("""
+        Boolean andResult = cmb.configuration("""
                 {
                     "activationIds":[1,2],
                     "operation":"AND"
                 }
-                """).evaluateFor(Collections.EMPTY_MAP);
+                """).apply("{}");
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.setConfiguration("""
+        Boolean orResult = cmb.configuration("""
                 {
                     "activationIds":[1,2],
                     "operation":"OR"
                 }
-                """).evaluateFor(Collections.EMPTY_MAP);
+                """).apply("{}");
         assertThat(orResult).isTrue();
     }
 }

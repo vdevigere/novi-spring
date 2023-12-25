@@ -11,12 +11,12 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateInBetween() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.setConfiguration("""
+        boolean result = dta.configuration("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
                 }
-                """).evaluateFor("""
+                """).apply("""
                 {
                     "org.novi.activations.DateTimeActivation.currentDateTime": "15-12-2023 12:00"
                 }
@@ -27,12 +27,12 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateEqStartDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.setConfiguration("""
+        boolean result = dta.configuration("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
                 }
-                """).evaluateFor("""
+                """).apply("""
                 {
                     "org.novi.activations.DateTimeActivation.currentDateTime": "11-12-2023 12:00"
                 }
@@ -43,12 +43,12 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateEqEndDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.setConfiguration("""
+        boolean result = dta.configuration("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
                 }
-                """).evaluateFor("""
+                """).apply("""
                 {
                     "org.novi.activations.DateTimeActivation.currentDateTime": "20-12-2023 12:00"
                 }
@@ -59,12 +59,12 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateGtEndDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.setConfiguration("""
+        boolean result = dta.configuration("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
                 }
-                """).evaluateFor("""
+                """).apply("""
                 {
                     "org.novi.activations.DateTimeActivation.currentDateTime": "25-12-2023 12:00"
                 }
@@ -75,12 +75,12 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateLtStartDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.setConfiguration("""
+        boolean result = dta.configuration("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
                 }
-                """).evaluateFor("""
+                """).apply("""
                 {
                     "org.novi.activations.DateTimeActivation.currentDateTime": "05-12-2023 12:00"
                 }
