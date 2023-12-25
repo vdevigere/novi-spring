@@ -2,11 +2,8 @@ package org.novi.activations;
 
 import org.apache.commons.math3.util.Pair;
 import org.junit.jupiter.api.Test;
-import org.novi.core.activations.BaseConfiguredActivation;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.core.exceptions.ContextParseException;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +19,7 @@ class WeightedRandomActivationTest {
                 "SampleC":25.0
                 }
                 """;
-        BaseConfiguredActivation<List<Pair<String, Double>>> retVal = wra.whenConfiguredWith(config);
+        WeightedRandomActivation retVal = wra.setConfiguration(config);
         assertThat(retVal.getConfiguration()).contains(Pair.create("SampleA", 50.0), Pair.create("SampleB", 25.0), Pair.create("SampleC", 25.0));
     }
 
@@ -44,7 +41,7 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """;
-        assertThat(wra.whenConfiguredWith(config).evaluateFor(context)).isTrue();
+        assertThat(wra.setConfiguration(config).evaluateFor(context)).isTrue();
     }
 
     @Test
@@ -65,6 +62,6 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """;
-        assertThat(wra.whenConfiguredWith(config).evaluateFor(context)).isFalse();
+        assertThat(wra.setConfiguration(config).evaluateFor(context)).isFalse();
     }
 }

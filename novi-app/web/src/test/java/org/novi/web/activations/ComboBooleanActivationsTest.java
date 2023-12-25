@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.novi.core.ActivationConfig;
 import org.novi.core.activations.BaseActivation;
-import org.novi.core.activations.BaseConfiguredActivation;
 import org.novi.core.activations.FoundActivations;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.persistence.ActivationConfigRepository;
@@ -19,17 +18,43 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ComboBooleanActivationsTest {
-    BaseActivation alwaysTrue = configuration -> new BaseConfiguredActivation<String>(configuration) {
+    BaseActivation<String> alwaysTrue = new BaseActivation<>() {
+        private String config;
+
+        @Override
+        public BaseActivation<String> setConfiguration(String configuration) throws ConfigurationParseException {
+            this.config = configuration;
+            return this;
+        }
+
         @Override
         public Boolean evaluateFor(Map<String, Object> context) {
             return true;
         }
+
+        @Override
+        public String getConfiguration() {
+            return config;
+        }
     };
 
-    BaseActivation alwaysFalse = configuration -> new BaseConfiguredActivation<String>(configuration) {
+    BaseActivation<String> alwaysFalse = new BaseActivation<>() {
+        private String config;
+
+        @Override
+        public BaseActivation<String> setConfiguration(String configuration) throws ConfigurationParseException {
+            this.config = configuration;
+            return this;
+        }
+
         @Override
         public Boolean evaluateFor(Map<String, Object> context) {
             return false;
+        }
+
+        @Override
+        public String getConfiguration() {
+            return config;
         }
     };
 
@@ -85,14 +110,14 @@ public class ComboBooleanActivationsTest {
         when(mockRepository.findAllById(Mockito.any())).thenReturn(activationConfigs);
         ComboBooleanActivations cmb = new ComboBooleanActivations(mockRepository);
 
-        Boolean andResult = cmb.whenConfiguredWith("""
+        Boolean andResult = cmb.setConfiguration("""
                 {
                     "activationIds":[1,2],
                     "operation":"AND"
                 }
                 """).evaluateFor(Collections.EMPTY_MAP);
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.whenConfiguredWith("""
+        Boolean orResult = cmb.setConfiguration("""
                 {
                     "activationIds":[1,2],
                     "operation":"OR"

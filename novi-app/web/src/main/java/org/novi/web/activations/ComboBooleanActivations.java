@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.novi.core.ActivationConfig;
 import org.novi.core.activations.BaseActivation;
-import org.novi.core.activations.BaseConfiguredActivation;
 import org.novi.core.activations.FoundActivations;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.persistence.ActivationConfigRepository;
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
-public class ComboBooleanActivations implements BaseActivation {
+public class ComboBooleanActivations implements BaseActivation<Iterable<ActivationConfig>> {
 
     @Autowired
     private ActivationConfigRepository activationConfigRepository;
@@ -23,6 +22,9 @@ public class ComboBooleanActivations implements BaseActivation {
     private final Map<String, BaseActivation> foundActivations = FoundActivations.REGISTRY.getMap();
 
     Logger logger = LoggerFactory.getLogger(ComboBooleanActivations.class);
+    private Iterable<ActivationConfig> configuration;
+
+    private OPERATION operation;
 
     public ComboBooleanActivations(ActivationConfigRepository activationConfigRepository) {
         this.activationConfigRepository = activationConfigRepository;
@@ -42,7 +44,7 @@ public class ComboBooleanActivations implements BaseActivation {
 
 
     @Override
-    public BaseConfiguredActivation<Iterable<ActivationConfig>> whenConfiguredWith(String configuration) throws ConfigurationParseException {
+    public ComboBooleanActivations setConfiguration(String configuration) throws ConfigurationParseException {
         // Array of activationConfig Ids. Read the actual activationConfigs from the database
         logger.debug("Parsing configuration:{}", configuration);
         try {
@@ -55,38 +57,45 @@ public class ComboBooleanActivations implements BaseActivation {
         }
     }
 
-    public BaseConfiguredActivation<Iterable<ActivationConfig>> whenConfiguredWith(ConfigRecord configMap) {
+    @Override
+    public Boolean evaluateFor(Map<String, Object> context) {
+        Boolean resultingStatus = null;
+        for (ActivationConfig activationConfig : getConfiguration()) {
+            BaseActivation activation = foundActivations.get(activationConfig.getName());
+            if (activation != null) {
+                try {
+                    Boolean evaluatedStatus = activation.setConfiguration(activationConfig.getConfig()).evaluateFor(context);
+                    Boolean originalStatus = resultingStatus;
+                    logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), originalStatus, evaluatedStatus);
+                    switch (operation) {
+                        case OR ->
+                                resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus | evaluatedStatus;
+                        case AND ->
+                                resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus & evaluatedStatus;
+                    }
+                    logger.debug("{} {} {} = {}", originalStatus, operation, evaluatedStatus, resultingStatus);
+                } catch (ConfigurationParseException configurationParseException) {
+                    throw new RuntimeException(configurationParseException);
+                }
+            }
+        }
+        return resultingStatus;
+    }
+
+    @Override
+    public Iterable<ActivationConfig> getConfiguration() {
+        return configuration;
+    }
+
+    public ComboBooleanActivations whenConfiguredWith(ConfigRecord configMap) {
         logger.debug("Looking up Ids: {} from DB", configMap.activationIds);
         Iterable<ActivationConfig> activationConfigs = activationConfigRepository.findAllById(configMap.activationIds);
         return whenConfiguredWith(activationConfigs, configMap.operation());
     }
 
-    public BaseConfiguredActivation<Iterable<ActivationConfig>> whenConfiguredWith(Iterable<ActivationConfig> activationConfigs, OPERATION operation) {
-        return new BaseConfiguredActivation<>(activationConfigs) {
-            @Override
-            public Boolean evaluateFor(Map<String, Object> context) {
-                Boolean resultingStatus = null;
-                for (ActivationConfig activationConfig : activationConfigs) {
-                    BaseActivation activation = foundActivations.get(activationConfig.getName());
-                    if (activation != null) {
-                        try {
-                            Boolean evaluatedStatus = activation.whenConfiguredWith(activationConfig.getConfig()).evaluateFor(context);
-                            Boolean originalStatus = resultingStatus;
-                            logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), originalStatus, evaluatedStatus);
-                            switch (operation) {
-                                case OR ->
-                                        resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus | evaluatedStatus;
-                                case AND ->
-                                        resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus & evaluatedStatus;
-                            }
-                            logger.debug("{} {} {} = {}", originalStatus, operation, evaluatedStatus, resultingStatus);
-                        } catch (ConfigurationParseException configurationParseException) {
-                            throw new RuntimeException(configurationParseException);
-                        }
-                    }
-                }
-                return resultingStatus;
-            }
-        };
+    public ComboBooleanActivations whenConfiguredWith(Iterable<ActivationConfig> activationConfigs, OPERATION operation) {
+        this.configuration = activationConfigs;
+        this.operation = operation;
+        return this;
     }
 }
