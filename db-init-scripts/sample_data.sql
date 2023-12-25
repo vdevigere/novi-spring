@@ -2,7 +2,8 @@ insert into flag
 values
   (1, 'featureA'),
   (2, 'featureB'),
-  (3, 'featureC');
+  (3, 'featureC'),
+  (4, 'featureD');
 insert into activation_config
 values
   (
@@ -20,10 +21,15 @@ values
  (
    4, '{"activationIds":[1,2],"operation":"OR"}',
    '1 OR 2', 'org.novi.web.activations.ComboBooleanActivations'
+ ),
+ (
+    5, '!org.novi.dsl.FalseActivationConfig("False-1") & (org.novi.dsl.FalseActivationConfig("False-2") | org.novi.dsl.TrueActivationConfig("True-3"))',
+    'DSL', 'org.novi.web.activations.ComboBooleanActivations'
  );
 insert into flag_activation_configs
 values
   (1, 1),
   (1, 2),
   (2, 3),
-  (3, 4);
+  (3, 4),
+  (4, 5);
