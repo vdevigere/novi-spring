@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine as compile
+FROM eclipse-temurin:21-jdk-alpine as build
 WORKDIR /workspace/novi-app
 COPY .mvn .mvn
 COPY mvnw .
@@ -10,6 +10,8 @@ COPY web web
 RUN ./mvnw clean install -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
-ARG APP_JAR=/workspace/novi-app/web/target/*.jar
-COPY --from=compile ${APP_JAR} app.jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar app.jar ${0} ${@}"]
+WORKDIR /Novi
+ARG BUILD_FOLDER=/workspace/novi-app/web/target
+COPY --from=build ${BUILD_FOLDER}/classes .
+COPY --from=build ${BUILD_FOLDER}/libs libs
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -cp .:libs/*:/var/dsl-activations/* org.novi.web.NoviApplication ${0} ${@}"]

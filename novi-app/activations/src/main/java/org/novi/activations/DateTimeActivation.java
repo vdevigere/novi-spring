@@ -37,7 +37,7 @@ public class DateTimeActivation implements BaseActivation<DateTimeActivation.Dat
     }
 
     @Override
-    public Boolean apply(String context){
+    public Boolean apply(String context) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(context);
@@ -47,6 +47,7 @@ public class DateTimeActivation implements BaseActivation<DateTimeActivation.Dat
             throw new RuntimeException(e);
         }
     }
+
     public Boolean evaluateFor(Map<String, Object> context) {
         SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
         try {

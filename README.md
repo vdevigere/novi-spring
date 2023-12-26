@@ -12,4 +12,5 @@ If you have docker, run `docker compose up` in the parent directory, which execu
 - and builds the code and executes it while connecting to the postgres instance.
 - Creates tables and sample data from the db-init-scripts folder is inserted into the tables
 
-If you make code changes, run `docker compose build web` to rebuild the image and then run `docker compose up`
+If you make code changes, run `docker compose build web` or (`docker compose build web --no-cache` to force recreate
+image) to rebuild the image and then run `docker compose up`

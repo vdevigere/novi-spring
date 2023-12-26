@@ -22,17 +22,18 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
     private final Map<String, BaseActivation> foundActivations = FoundActivations.REGISTRY.getMap();
 
     Logger logger = LoggerFactory.getLogger(ComboBooleanActivations.class);
+
     private Iterable<ActivationConfig> configuration;
 
     private OPERATION operation;
 
-    public ComboBooleanActivations(ActivationConfigRepository activationConfigRepository) {
-        this.activationConfigRepository = activationConfigRepository;
-    }
-
     // Needed for ServiceLoader
     public ComboBooleanActivations() {
 
+    }
+
+    public ComboBooleanActivations(ActivationConfigRepository activationConfigRepository) {
+        this.activationConfigRepository = activationConfigRepository;
     }
 
     public enum OPERATION {
@@ -58,12 +59,13 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
     }
 
     @Override
-    public Boolean apply(String context){
+    public Boolean apply(String context) {
         Boolean resultingStatus = null;
         for (ActivationConfig activationConfig : configuration()) {
-            BaseActivation activation = foundActivations.get(activationConfig.getName());
+            BaseActivation<?> activation = foundActivations.get(activationConfig.getName());
             if (activation != null) {
                 try {
+                    logger.debug("Found configuration: {}", activationConfig.getConfig());
                     Boolean evaluatedStatus = activation.configuration(activationConfig.getConfig()).apply(context);
                     Boolean originalStatus = resultingStatus;
                     logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), originalStatus, evaluatedStatus);

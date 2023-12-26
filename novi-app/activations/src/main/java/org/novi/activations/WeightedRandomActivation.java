@@ -33,7 +33,7 @@ public class WeightedRandomActivation implements BaseActivation<List<Pair<String
     }
 
     @Override
-    public Boolean apply(String context){
+    public Boolean apply(String context) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(context);

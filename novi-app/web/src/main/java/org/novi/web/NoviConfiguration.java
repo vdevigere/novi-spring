@@ -48,7 +48,7 @@ public class NoviConfiguration {
         }
         for (BaseActivation activation : loader) {
             logger.debug("Found Activation: {}", activation.getClass().getCanonicalName());
-            if(applicationContext != null) applicationContext.getAutowireCapableBeanFactory().autowireBean(activation);
+            if (applicationContext != null) applicationContext.getAutowireCapableBeanFactory().autowireBean(activation);
             registry.put(activation.getClass().getCanonicalName(), activation);
         }
         if (registry.isEmpty()) {
