@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -67,19 +68,26 @@ public class NoviConfiguration {
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
     public ScriptEngine scriptEngine(String plugin_dir) {
-        ClassLoader classLoader = NoviConfiguration.class.getClassLoader();
         File pluginDir = new File(plugin_dir);
+        URL[] urls = {};
         File[] fList = pluginDir.listFiles(file -> file.getPath().toLowerCase().endsWith(".jar"));
         if (fList != null) {
-            URL[] urls = Arrays.stream(fList).map(file -> {
+            urls = Arrays.stream(fList).map(file -> {
                 try {
                     return file.toURI().toURL();
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
             }).toArray(URL[]::new);
-            classLoader = URLClassLoader.newInstance(urls, NoviConfiguration.class.getClassLoader());
+        }else{
+            try {
+                urls = new URL[]{pluginDir.toURI().toURL()};
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return new javax.script.ScriptEngineManager(classLoader).getEngineByName("scala");
+        ClassLoader classLoader = URLClassLoader.newInstance(urls, NoviConfiguration.class.getClassLoader());
+        ScriptEngine engine = new ScriptEngineManager(classLoader).getEngineByName("scala");
+        return engine;
     }
 }

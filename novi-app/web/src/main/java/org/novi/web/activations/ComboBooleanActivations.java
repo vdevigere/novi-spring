@@ -28,10 +28,6 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
 
     private OPERATION operation;
 
-    public ComboBooleanActivations(ActivationConfigRepository activationConfigRepository) {
-        this.activationConfigRepository = activationConfigRepository;
-    }
-
     // Needed for ServiceLoader
     public ComboBooleanActivations() {
 

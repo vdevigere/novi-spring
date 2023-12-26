@@ -5,6 +5,7 @@ import org.novi.core.ActivationConfig;
 import org.novi.core.activations.BaseActivation;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.persistence.ActivationConfigRepository;
+import org.novi.web.NoviConfiguration;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -18,10 +19,10 @@ import static org.mockito.Mockito.when;
 public class ComboBooleanActivationsTest {
 
     public static final String A_CONFIG = """
-            !FalseActivationConfig("False-1") & (FalseActivationConfig("False-2") | TrueActivationConfig("True-3"))
+            !org.novi.dsl.activations.FalseActivationConfig("False-1") & (org.novi.dsl.activations.FalseActivationConfig("False-2") | org.novi.dsl.activations.TrueActivationConfig("True-3"))
             """;
     public static final String B_CONFIG = """
-            FalseActivationConfig("False-1") & (FalseActivationConfig("False-2") | TrueActivationConfig("True-3"))
+            org.novi.dsl.activations.FalseActivationConfig("False-1") & (org.novi.dsl.activations.FalseActivationConfig("False-2") | org.novi.dsl.activations.TrueActivationConfig("True-3"))
             """;
 
     private List<ActivationConfig> mockActivationConfigs() {
@@ -94,6 +95,17 @@ public class ComboBooleanActivationsTest {
                     "operation":"OR"
                 }
                 """).apply("{}");
+        assertThat(orResult).isTrue();
+    }
+
+    @Test
+    public void testRealScriptEngine(){
+        List<ActivationConfig> activationConfigs = mockActivationConfigs();
+        NoviConfiguration noviConfiguration = new NoviConfiguration("src/test/plugin-activations/", null);
+        ComboBooleanActivations cmb = new ComboBooleanActivations(null, noviConfiguration.scriptEngine("src/test/plugin-activations/"));
+        Boolean andResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.AND).apply("{}");
+        assertThat(andResult).isFalse();
+        Boolean orResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.OR).apply("{}");
         assertThat(orResult).isTrue();
     }
 }
