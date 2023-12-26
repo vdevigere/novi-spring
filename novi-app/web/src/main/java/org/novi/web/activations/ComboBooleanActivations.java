@@ -5,23 +5,25 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.novi.core.ActivationConfig;
 import org.novi.core.activations.BaseActivation;
-import org.novi.core.activations.FoundActivations;
 import org.novi.core.exceptions.ConfigurationParseException;
 import org.novi.persistence.ActivationConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
 public class ComboBooleanActivations implements BaseActivation<Iterable<ActivationConfig>> {
 
     @Autowired
     private ActivationConfigRepository activationConfigRepository;
 
-    private final Map<String, BaseActivation> foundActivations = FoundActivations.REGISTRY.getMap();
+    @Autowired
+    private ScriptEngine scriptEngine;
 
     Logger logger = LoggerFactory.getLogger(ComboBooleanActivations.class);
+
     private Iterable<ActivationConfig> configuration;
 
     private OPERATION operation;
@@ -33,6 +35,11 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
     // Needed for ServiceLoader
     public ComboBooleanActivations() {
 
+    }
+
+    public ComboBooleanActivations(ActivationConfigRepository activationConfigRepository, ScriptEngine scriptEngine) {
+        this.scriptEngine = scriptEngine;
+        this.activationConfigRepository = activationConfigRepository;
     }
 
     public enum OPERATION {
@@ -58,25 +65,23 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
     }
 
     @Override
-    public Boolean apply(String context){
+    public Boolean apply(String context) {
         Boolean resultingStatus = null;
         for (ActivationConfig activationConfig : configuration()) {
-            BaseActivation activation = foundActivations.get(activationConfig.getName());
-            if (activation != null) {
-                try {
-                    Boolean evaluatedStatus = activation.configuration(activationConfig.getConfig()).apply(context);
-                    Boolean originalStatus = resultingStatus;
-                    logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), originalStatus, evaluatedStatus);
-                    switch (operation) {
-                        case OR ->
-                                resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus | evaluatedStatus;
-                        case AND ->
-                                resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus & evaluatedStatus;
-                    }
-                    logger.debug("{} {} {} = {}", originalStatus, operation, evaluatedStatus, resultingStatus);
-                } catch (ConfigurationParseException configurationParseException) {
-                    throw new RuntimeException(configurationParseException);
+            try {
+                BaseActivation<?> baseActivation = (BaseActivation) scriptEngine.eval(activationConfig.getConfig());
+                Boolean evaluatedStatus = baseActivation.apply(context);
+                Boolean originalStatus = resultingStatus;
+                logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), originalStatus, evaluatedStatus);
+                switch (operation) {
+                    case OR ->
+                            resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus | evaluatedStatus;
+                    case AND ->
+                            resultingStatus = (resultingStatus == null) ? evaluatedStatus : resultingStatus & evaluatedStatus;
                 }
+                logger.debug("{} {} {} = {}", originalStatus, operation, evaluatedStatus, resultingStatus);
+            } catch (ScriptException configurationParseException) {
+                throw new RuntimeException(configurationParseException);
             }
         }
         return resultingStatus;

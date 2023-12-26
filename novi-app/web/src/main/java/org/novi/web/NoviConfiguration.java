@@ -8,10 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
+import javax.script.ScriptEngine;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,7 +51,7 @@ public class NoviConfiguration {
         }
         for (BaseActivation activation : loader) {
             logger.debug("Found Activation: {}", activation.getClass().getCanonicalName());
-            if(applicationContext != null) applicationContext.getAutowireCapableBeanFactory().autowireBean(activation);
+            if (applicationContext != null) applicationContext.getAutowireCapableBeanFactory().autowireBean(activation);
             registry.put(activation.getClass().getCanonicalName(), activation);
         }
         if (registry.isEmpty()) {
@@ -57,7 +60,26 @@ public class NoviConfiguration {
     }
 
     @Bean
-    public ComboBooleanActivations comboBooleanActivations(@Autowired ActivationConfigRepository activationConfigRepository) {
-        return new ComboBooleanActivations(activationConfigRepository);
+    public ComboBooleanActivations comboBooleanActivations(@Autowired ActivationConfigRepository activationConfigRepository, @Value("${activations.plugin.dir}") String plugin_dir) {
+        return new ComboBooleanActivations(activationConfigRepository, scriptEngine(plugin_dir));
+    }
+
+    @Bean
+    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public ScriptEngine scriptEngine(String plugin_dir) {
+        ClassLoader classLoader = NoviConfiguration.class.getClassLoader();
+        File pluginDir = new File(plugin_dir);
+        File[] fList = pluginDir.listFiles(file -> file.getPath().toLowerCase().endsWith(".jar"));
+        if (fList != null) {
+            URL[] urls = Arrays.stream(fList).map(file -> {
+                try {
+                    return file.toURI().toURL();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }).toArray(URL[]::new);
+            classLoader = URLClassLoader.newInstance(urls, NoviConfiguration.class.getClassLoader());
+        }
+        return new javax.script.ScriptEngineManager(classLoader).getEngineByName("scala");
     }
 }
