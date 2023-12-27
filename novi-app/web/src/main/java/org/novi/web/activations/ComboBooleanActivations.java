@@ -19,7 +19,6 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
     @Autowired
     private ActivationConfigRepository activationConfigRepository;
 
-    @Autowired
     private ScriptEngine scriptEngine;
 
     Logger logger = LoggerFactory.getLogger(ComboBooleanActivations.class);
@@ -65,6 +64,7 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
         Boolean resultingStatus = null;
         for (ActivationConfig activationConfig : configuration()) {
             try {
+                logger.debug("Executing DSL: {}", activationConfig.getConfig());
                 BaseActivation<?> baseActivation = (BaseActivation) scriptEngine.eval(activationConfig.getConfig());
                 Boolean evaluatedStatus = baseActivation.apply(context);
                 Boolean originalStatus = resultingStatus;

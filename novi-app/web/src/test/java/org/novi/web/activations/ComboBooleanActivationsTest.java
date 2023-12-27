@@ -8,6 +8,7 @@ import org.novi.persistence.ActivationConfigRepository;
 import org.novi.web.NoviConfiguration;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.Arrays;
 import java.util.List;
@@ -102,7 +103,7 @@ public class ComboBooleanActivationsTest {
     public void testRealScriptEngine(){
         List<ActivationConfig> activationConfigs = mockActivationConfigs();
         NoviConfiguration noviConfiguration = new NoviConfiguration("src/test/plugin-activations/", null);
-        ComboBooleanActivations cmb = new ComboBooleanActivations(null, noviConfiguration.scriptEngine("src/test/plugin-activations/"));
+        ComboBooleanActivations cmb = new ComboBooleanActivations(null, new ScriptEngineManager(ComboBooleanActivationsTest.class.getClassLoader()).getEngineByName("scala"));
         Boolean andResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.AND).apply("{}");
         assertThat(andResult).isFalse();
         Boolean orResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.OR).apply("{}");

@@ -8,13 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -61,33 +58,7 @@ public class NoviConfiguration {
     }
 
     @Bean
-    public ComboBooleanActivations comboBooleanActivations(@Autowired ActivationConfigRepository activationConfigRepository, @Value("${activations.plugin.dir}") String plugin_dir) {
-        return new ComboBooleanActivations(activationConfigRepository, scriptEngine(plugin_dir));
-    }
-
-    @Bean
-    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public ScriptEngine scriptEngine(String plugin_dir) {
-        File pluginDir = new File(plugin_dir);
-        URL[] urls = {};
-        File[] fList = pluginDir.listFiles(file -> file.getPath().toLowerCase().endsWith(".jar"));
-        if (fList != null) {
-            urls = Arrays.stream(fList).map(file -> {
-                try {
-                    return file.toURI().toURL();
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-            }).toArray(URL[]::new);
-        }else{
-            try {
-                urls = new URL[]{pluginDir.toURI().toURL()};
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        ClassLoader classLoader = URLClassLoader.newInstance(urls, NoviConfiguration.class.getClassLoader());
-        ScriptEngine engine = new ScriptEngineManager(classLoader).getEngineByName("scala");
-        return engine;
+    public ComboBooleanActivations comboBooleanActivations(@Autowired ActivationConfigRepository activationConfigRepository) {
+        return new ComboBooleanActivations(activationConfigRepository, new ScriptEngineManager(NoviConfiguration.class.getClassLoader()).getEngineByName("scala"));
     }
 }
