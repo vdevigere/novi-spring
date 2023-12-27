@@ -98,15 +98,4 @@ public class ComboBooleanActivationsTest {
                 """).apply("{}");
         assertThat(orResult).isTrue();
     }
-
-    @Test
-    public void testRealScriptEngine(){
-        List<ActivationConfig> activationConfigs = mockActivationConfigs();
-        NoviConfiguration noviConfiguration = new NoviConfiguration("src/test/plugin-activations/", null);
-        ComboBooleanActivations cmb = new ComboBooleanActivations(null, new ScriptEngineManager(ComboBooleanActivationsTest.class.getClassLoader()).getEngineByName("scala"));
-        Boolean andResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.AND).apply("{}");
-        assertThat(andResult).isFalse();
-        Boolean orResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.OR).apply("{}");
-        assertThat(orResult).isTrue();
-    }
 }

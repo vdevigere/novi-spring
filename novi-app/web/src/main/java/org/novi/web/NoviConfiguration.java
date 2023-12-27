@@ -12,12 +12,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
@@ -59,6 +61,14 @@ public class NoviConfiguration {
 
     @Bean
     public ComboBooleanActivations comboBooleanActivations(@Autowired ActivationConfigRepository activationConfigRepository) {
-        return new ComboBooleanActivations(activationConfigRepository, new ScriptEngineManager(NoviConfiguration.class.getClassLoader()).getEngineByName("scala"));
+        ScriptEngineManager sem = new ScriptEngineManager(NoviConfiguration.class.getClassLoader());
+        List<ScriptEngineFactory> factories = sem.getEngineFactories();
+        logger.debug("Found the following Script Engines:");
+        for (ScriptEngineFactory factory : factories) {
+            logger.debug("{}, {}, {}", factory.getEngineName(), factory.getEngineVersion(), factory.getNames());
+        }
+        if (factories.isEmpty())
+            logger.debug("No Script Engines found");
+        return new ComboBooleanActivations(activationConfigRepository, sem.getEngineByName("scala"));
     }
 }
