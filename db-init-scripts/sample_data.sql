@@ -4,7 +4,8 @@ values
   (2, 'featureB'),
   (3, 'featureC'),
   (4, 'featureD'),
-  (5, 'featureE');
+  (5, 'featureE'),
+  (6, 'featureF');
 insert into activation_config
 values
   (
@@ -34,6 +35,9 @@ values
  (
      7, 'org.novi.activations.dsl.FalseActivation("False-1") & (org.novi.activations.dsl.FalseActivation("False-2") | org.novi.activations.dsl.TrueActivation("True-3"))',
      'DSL', 'org.novi.activations.DslEvaluator'
+  ),
+  (
+    8, 'does not matter', 'DSL activation used as non-dsl activation', 'org.novi.activations.dsl.DynamicActivation'
   );
 insert into flag_activation_configs
 values
@@ -42,4 +46,5 @@ values
   (2, 3),
   (3, 4),
   (4, 5),
-  (5, 7);
+  (5, 7),
+  (6, 8);
