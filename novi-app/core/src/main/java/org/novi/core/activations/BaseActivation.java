@@ -8,7 +8,7 @@ public interface BaseActivation<T> {
         return this.getClass().getCanonicalName();
     }
 
-    public abstract BaseActivation<T> configuration(String configuration) throws ConfigurationParseException;
+    public abstract BaseActivation<T> valueOf(String configuration) throws ConfigurationParseException;
 
     public abstract Boolean apply(String context);
 

@@ -1,0 +1,3 @@
+org.novi.activations.dsl.DynamicActivation
+org.novi.activations.dsl.WeightedRandomActivation
+org.novi.activations.dsl.DateTimeActivation

@@ -1,5 +1,6 @@
 package org.novi.core.dsl
 
+import org.novi.core.activations.BaseActivation
 import org.slf4j.LoggerFactory
 
 
@@ -11,4 +12,6 @@ class OrActivation(op1: DslActivation, op2: DslActivation, configuration: String
     logger.debug("{} | {} = {}", op1.configuration, op2.configuration, result)
     result
   }
+
+  override def valueOf(configuration: String): BaseActivation[String] = throw UnsupportedOperationException()
 }
