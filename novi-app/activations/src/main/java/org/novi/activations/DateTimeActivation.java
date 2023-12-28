@@ -26,7 +26,7 @@ public class DateTimeActivation implements BaseActivation<DateTimeActivation.Dat
     }
 
     @Override
-    public DateTimeActivation configuration(String configuration) throws ConfigurationParseException {
+    public DateTimeActivation valueOf(String configuration) throws ConfigurationParseException {
         try {
             this.configuration = mapper().readValue(configuration, new TypeReference<>() {
             });

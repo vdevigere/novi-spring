@@ -40,5 +40,5 @@ class WeightedRandomActivation(configuration: String) extends DslActivation(conf
   }
 
 
-  override def configuration(configuration: String): BaseActivation[String] = WeightedRandomActivation(configuration)
+  override def valueOf(configuration: String): BaseActivation[String] = WeightedRandomActivation(configuration)
 }

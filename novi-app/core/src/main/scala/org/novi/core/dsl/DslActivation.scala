@@ -12,7 +12,7 @@ trait DslActivation(var configuration: String) extends BaseActivation[String] {
 
   def apply(context: String): java.lang.Boolean
 
-  override def configuration(configuration: String): BaseActivation[String] = {
+  override def valueOf(configuration: String): BaseActivation[String] = {
     this.configuration = configuration
     this
   }

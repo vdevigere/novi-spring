@@ -19,7 +19,7 @@ class WeightedRandomActivationTest {
                 "SampleC":25.0
                 }
                 """;
-        WeightedRandomActivation retVal = wra.configuration(config);
+        WeightedRandomActivation retVal = wra.valueOf(config);
         assertThat(retVal.configuration()).contains(Pair.create("SampleA", 50.0), Pair.create("SampleB", 25.0), Pair.create("SampleC", 25.0));
     }
 
@@ -41,7 +41,7 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """;
-        assertThat(wra.configuration(config).apply(context)).isTrue();
+        assertThat(wra.valueOf(config).apply(context)).isTrue();
     }
 
     @Test
@@ -62,6 +62,6 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """;
-        assertThat(wra.configuration(config).apply(context)).isFalse();
+        assertThat(wra.valueOf(config).apply(context)).isFalse();
     }
 }

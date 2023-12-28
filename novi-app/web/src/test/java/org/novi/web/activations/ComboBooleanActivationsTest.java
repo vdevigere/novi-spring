@@ -38,10 +38,10 @@ public class ComboBooleanActivationsTest {
     @BeforeEach
     private void mockRegistry() throws ConfigurationParseException {
         BaseActivation<String> alwaysTrue = mock(BaseActivation.class);
-        when(alwaysTrue.configuration(A_CONFIG)).thenReturn(alwaysTrue);
+        when(alwaysTrue.valueOf(A_CONFIG)).thenReturn(alwaysTrue);
         when(alwaysTrue.apply("{}")).thenReturn(true);
         BaseActivation<String> alwaysFalse = mock(BaseActivation.class);
-        when(alwaysFalse.configuration(B_CONFIG)).thenReturn(alwaysFalse);
+        when(alwaysFalse.valueOf(B_CONFIG)).thenReturn(alwaysFalse);
         when(alwaysFalse.apply("{}")).thenReturn(false);
 
         FoundActivations.REGISTRY.getMap().put("A", alwaysTrue);
@@ -83,14 +83,14 @@ public class ComboBooleanActivationsTest {
         when(mockRepository.findAllById(ids)).thenReturn(activationConfigs);
         ComboBooleanActivations cmb = new ComboBooleanActivations(mockRepository);
 
-        Boolean andResult = cmb.configuration("""
+        Boolean andResult = cmb.valueOf("""
                 {
                     "activationIds":[1,2],
                     "operation":"AND"
                 }
                 """).apply("{}");
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.configuration("""
+        Boolean orResult = cmb.valueOf("""
                 {
                     "activationIds":[1,2],
                     "operation":"OR"

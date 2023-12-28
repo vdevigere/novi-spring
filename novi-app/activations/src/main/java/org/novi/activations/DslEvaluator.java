@@ -17,7 +17,7 @@ public class DslEvaluator implements BaseActivation<DslActivation> {
     private final Logger logger = LoggerFactory.getLogger(DslEvaluator.class);
 
     @Override
-    public BaseActivation<DslActivation> configuration(String configuration) throws ConfigurationParseException {
+    public BaseActivation<DslActivation> valueOf(String configuration) throws ConfigurationParseException {
         logger.debug("Parsing DSL: {}", configuration);
         try {
             ScriptEngineManager sem = new ScriptEngineManager(DslEvaluator.class.getClassLoader());

@@ -11,7 +11,7 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateInBetween() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.configuration("""
+        boolean result = dta.valueOf("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
@@ -27,7 +27,7 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateEqStartDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.configuration("""
+        boolean result = dta.valueOf("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
@@ -43,7 +43,7 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateEqEndDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.configuration("""
+        boolean result = dta.valueOf("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
@@ -59,7 +59,7 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateGtEndDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.configuration("""
+        boolean result = dta.valueOf("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"
@@ -75,7 +75,7 @@ class DateTimeActivationTest {
     @Test
     void evaluateForDateLtStartDate() throws ConfigurationParseException, ContextParseException {
         DateTimeActivation dta = new DateTimeActivation();
-        boolean result = dta.configuration("""
+        boolean result = dta.valueOf("""
                 {
                     "startDateTime":"11-12-2023 12:00",
                     "endDateTime":"20-12-2023 12:00"

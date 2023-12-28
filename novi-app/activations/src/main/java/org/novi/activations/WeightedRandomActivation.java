@@ -19,7 +19,7 @@ public class WeightedRandomActivation implements BaseActivation<List<Pair<String
     private List<Pair<String, Double>> configuration;
 
     @Override
-    public WeightedRandomActivation configuration(String configuration) throws ConfigurationParseException {
+    public WeightedRandomActivation valueOf(String configuration) throws ConfigurationParseException {
         try {
             TypeReference<Map<String, Double>> tref = new TypeReference<>() {
             };
