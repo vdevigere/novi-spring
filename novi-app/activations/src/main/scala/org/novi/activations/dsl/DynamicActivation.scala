@@ -1,5 +1,6 @@
 package org.novi.activations.dsl
 
+import org.novi.core.activations.BaseActivation
 import org.novi.core.dsl.DslActivation
 import org.slf4j.LoggerFactory
 
@@ -17,4 +18,6 @@ class DynamicActivation(configuration: String = null) extends DslActivation(conf
     logger.debug("Context:{}", context)
     java.lang.Boolean.valueOf(context)
   }
+
+  override def valueOf(configuration: String): BaseActivation[String] = DynamicActivation(configuration)
 }
