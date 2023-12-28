@@ -25,11 +25,6 @@
         </dependency>
         <dependency>
             <groupId>org.novi</groupId>
-            <artifactId>activations</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.novi</groupId>
             <artifactId>persistence</artifactId>
             <version>${project.version}</version>
         </dependency>

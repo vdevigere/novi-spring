@@ -16,7 +16,6 @@
     <modules>
         <module>core</module>
         <module>web</module>
-        <module>activations</module>
         <module>persistence</module>
     </modules>
     <dependencies>

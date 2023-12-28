@@ -10,6 +10,6 @@ class NoviConfigurationTest {
     @Test
     void foundActivationsTest() {
         NoviConfiguration noviConfig = new NoviConfiguration("./plugins", null);
-        assertThat(FoundActivations.REGISTRY.getMap()).containsKey("org.novi.activations.DateTimeActivation");
+        assertThat(FoundActivations.REGISTRY.getMap()).containsKey("org.novi.web.activations.ComboBooleanActivations");
     }
 }

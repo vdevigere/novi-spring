@@ -3,10 +3,9 @@ services:
     container_name: novi-app
     restart: always
     depends_on: [ postgres ]
-    build: novi-app/.
+    build: .
     volumes:
       - ./plugin-activations:/var/plugin-activations
-      - ./dsl-activations:/var/dsl-activations
     ports:
       - "8080:8080"
     environment:

@@ -30,11 +30,11 @@ values
   ),
  (
     6, '!org.novi.activations.dsl.FalseActivation("False-1") & (org.novi.activations.dsl.FalseActivation("False-2") | org.novi.activations.dsl.TrueActivation("True-3"))',
-    'DSL', 'org.novi.activations.DslEvaluator'
+    'DSL', 'org.novi.web.activations.DslEvaluator'
  ),
  (
      7, 'org.novi.activations.dsl.FalseActivation("False-1") & (org.novi.activations.dsl.FalseActivation("False-2") | org.novi.activations.dsl.TrueActivation("True-3"))',
-     'DSL', 'org.novi.activations.DslEvaluator'
+     'DSL', 'org.novi.web.activations.DslEvaluator'
   ),
   (
     8, 'does not matter', 'DSL activation used as non-dsl activation', 'org.novi.activations.dsl.DynamicActivation'
