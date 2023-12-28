@@ -11,9 +11,4 @@ trait DslActivation(var configuration: String) extends BaseActivation[String] {
   def unary_! : NotActivation = NotActivation(this, s"!(${this.configuration})")
 
   def apply(context: String): java.lang.Boolean
-
-  override def valueOf(configuration: String): BaseActivation[String] = {
-    this.configuration = configuration
-    this
-  }
 }
