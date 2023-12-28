@@ -9,16 +9,18 @@ import org.apache.commons.math3.util.Pair
 import org.novi.core.activations.BaseActivation
 import org.novi.core.dsl.DslActivation
 
-import java.util.{List, Map}
+import java.util.{Collections, List, Map}
 import java.{lang, util}
 
 class WeightedRandomActivation(configuration: String) extends DslActivation(configuration) {
-
-  val tref: TypeReference[util.Map[String, lang.Double]] = new TypeReference[util.Map[String, lang.Double]]() {}
-  val mapper = new ObjectMapper
-  val parsedConfig: util.Map[String, lang.Double] = mapper.readValue(configuration, tref)
-  private var variant_and_weights: util.List[Pair[String, lang.Double]] = parsedConfig.entrySet.stream.map((e: util.Map.Entry[String, lang.Double]) => Pair.create(e.getKey, e.getValue)).toList
-
+  private val variant_and_weights: util.List[Pair[String, lang.Double]] = if (configuration != null) {
+    val tref: TypeReference[util.Map[String, lang.Double]] = new TypeReference[util.Map[String, lang.Double]]() {}
+    val mapper = new ObjectMapper
+    val parsedConfig: util.Map[String, lang.Double] = mapper.readValue(configuration, tref)
+    parsedConfig.entrySet.stream.map((e: util.Map.Entry[String, lang.Double]) => Pair.create(e.getKey, e.getValue)).toList
+  } else {
+    Collections.emptyList()
+  }
 
   def this() = {
     this(null)

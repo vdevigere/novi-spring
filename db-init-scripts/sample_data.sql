@@ -10,11 +10,11 @@ insert into activation_config
 values
   (
     1, '{"startDateTime":"11-12-2023 12:00","endDateTime":"20-12-2023 12:00" }',
-    'DateTime', 'org.novi.activations.DateTimeActivation'
+    'DateTime', 'org.novi.activations.dsl.DateTimeActivation'
   ),
   (
     2, '{"SampleA":100.0,"SampleB":0,"SampleC":0}',
-    'Always SAMPLE A', 'org.novi.activations.WeightedRandomActivation'
+    'Always SAMPLE A', 'org.novi.activations.dsl.WeightedRandomActivation'
   ),
   (
     3, '{"activationIds":[1,2],"operation":"AND"}',
