@@ -45,7 +45,7 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
 
 
     @Override
-    public ComboBooleanActivations valueOf(String configuration) throws ConfigurationParseException {
+    public ComboBooleanActivations apply(String configuration) throws ConfigurationParseException {
         // Array of activationConfig Ids. Read the actual activationConfigs from the database
         logger.debug("Parsing configuration:{}", configuration);
         try {
@@ -59,14 +59,14 @@ public class ComboBooleanActivations implements BaseActivation<Iterable<Activati
     }
 
     @Override
-    public Boolean apply(String context) {
+    public Boolean evaluate(String context) {
         Boolean resultingStatus = null;
         for (ActivationConfig activationConfig : configuration()) {
             BaseActivation<?> activation = foundActivations.get(activationConfig.getName());
             if (activation != null) {
                 try {
                     logger.debug("Found configuration: {}", activationConfig.getConfig());
-                    Boolean evaluatedStatus = activation.valueOf(activationConfig.getConfig()).apply(context);
+                    Boolean evaluatedStatus = activation.apply(activationConfig.getConfig()).evaluate(context);
                     Boolean originalStatus = resultingStatus;
                     logger.debug("{} -> Original Status: {}, Evaluated Status: {}", activationConfig.getName(), originalStatus, evaluatedStatus);
                     switch (operation) {

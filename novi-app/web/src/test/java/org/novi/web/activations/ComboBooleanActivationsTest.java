@@ -38,11 +38,11 @@ public class ComboBooleanActivationsTest {
     @BeforeEach
     private void mockRegistry() throws ConfigurationParseException {
         BaseActivation<String> alwaysTrue = mock(BaseActivation.class);
-        when(alwaysTrue.valueOf(A_CONFIG)).thenReturn(alwaysTrue);
-        when(alwaysTrue.apply("{}")).thenReturn(true);
+        when(alwaysTrue.apply(A_CONFIG)).thenReturn(alwaysTrue);
+        when(alwaysTrue.evaluate("{}")).thenReturn(true);
         BaseActivation<String> alwaysFalse = mock(BaseActivation.class);
-        when(alwaysFalse.valueOf(B_CONFIG)).thenReturn(alwaysFalse);
-        when(alwaysFalse.apply("{}")).thenReturn(false);
+        when(alwaysFalse.apply(B_CONFIG)).thenReturn(alwaysFalse);
+        when(alwaysFalse.evaluate("{}")).thenReturn(false);
 
         FoundActivations.REGISTRY.getMap().put("A", alwaysTrue);
         FoundActivations.REGISTRY.getMap().put("B", alwaysFalse);
@@ -52,9 +52,9 @@ public class ComboBooleanActivationsTest {
     public void testWhenConfiguredWithIterable() {
         List<ActivationConfig> activationConfigs = mockActivationConfigs();
         ComboBooleanActivations cmb = new ComboBooleanActivations(null);
-        Boolean andResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.AND).apply("{}");
+        Boolean andResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.AND).evaluate("{}");
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.OR).apply("{}");
+        Boolean orResult = cmb.whenConfiguredWith(activationConfigs, ComboBooleanActivations.OPERATION.OR).evaluate("{}");
         assertThat(orResult).isTrue();
     }
 
@@ -69,9 +69,9 @@ public class ComboBooleanActivationsTest {
         ComboBooleanActivations.ConfigRecord configMapAND = new ComboBooleanActivations.ConfigRecord(Arrays.asList(1L, 2L), ComboBooleanActivations.OPERATION.AND);
         ComboBooleanActivations.ConfigRecord configMapOR = new ComboBooleanActivations.ConfigRecord(Arrays.asList(1L, 2L), ComboBooleanActivations.OPERATION.OR);
 
-        Boolean andResult = cmb.whenConfiguredWith(configMapAND).apply("{}");
+        Boolean andResult = cmb.whenConfiguredWith(configMapAND).evaluate("{}");
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.whenConfiguredWith(configMapOR).apply("{}");
+        Boolean orResult = cmb.whenConfiguredWith(configMapOR).evaluate("{}");
         assertThat(orResult).isTrue();
     }
 
@@ -83,19 +83,19 @@ public class ComboBooleanActivationsTest {
         when(mockRepository.findAllById(ids)).thenReturn(activationConfigs);
         ComboBooleanActivations cmb = new ComboBooleanActivations(mockRepository);
 
-        Boolean andResult = cmb.valueOf("""
+        Boolean andResult = cmb.apply("""
                 {
                     "activationIds":[1,2],
                     "operation":"AND"
                 }
-                """).apply("{}");
+                """).evaluate("{}");
         assertThat(andResult).isFalse();
-        Boolean orResult = cmb.valueOf("""
+        Boolean orResult = cmb.apply("""
                 {
                     "activationIds":[1,2],
                     "operation":"OR"
                 }
-                """).apply("{}");
+                """).evaluate("{}");
         assertThat(orResult).isTrue();
     }
 }

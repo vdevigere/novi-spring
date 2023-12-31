@@ -18,8 +18,8 @@ class WeightedRandomActivationTest {
                 "SampleC":25.0
                 }
                 """
-    val retVal: WeightedRandomActivation = wra.valueOf(config).asInstanceOf[WeightedRandomActivation]
-    assertThat(retVal.variant_and_weights).contains(Pair.create("SampleA", 50.0), Pair.create("SampleB", 25.0), Pair.create("SampleC", 25.0))
+    val retVal: WeightedRandomActivation = wra.apply(config).asInstanceOf[WeightedRandomActivation]
+    assertThat(retVal.configuration).contains(Pair.create("SampleA", 50.0), Pair.create("SampleB", 25.0), Pair.create("SampleC", 25.0))
   }
 
   @Test
@@ -44,7 +44,7 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """
-    assertThat(wra.valueOf(config).apply(context)).isTrue
+    assertThat(wra.apply(config).evaluate(context)).isTrue
   }
 
   @Test
@@ -69,6 +69,6 @@ class WeightedRandomActivationTest {
                     }
                 }
                 """
-    assertThat(wra.valueOf(config).apply(context)).isFalse
+    assertThat(wra.apply(config).evaluate(context)).isFalse
   }
 }

@@ -9,6 +9,8 @@ public class ActivationConfig {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column
     private String name;
     @Column(columnDefinition = "TEXT")
     private String description;

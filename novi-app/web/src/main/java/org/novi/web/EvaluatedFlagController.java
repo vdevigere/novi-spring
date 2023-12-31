@@ -30,7 +30,7 @@ public class EvaluatedFlagController {
         logger.debug("Id: {}", id);
         Flag flag = flagRepository.findById(id).orElse(null);
         if (flag != null) {
-            Boolean resultingStatus = comboBooleanActivations.whenConfiguredWith(flag.getActivationConfigs(), ComboBooleanActivations.OPERATION.AND).apply(context);
+            Boolean resultingStatus = comboBooleanActivations.whenConfiguredWith(flag.getActivationConfigs(), ComboBooleanActivations.OPERATION.AND).evaluate(context);
             logger.debug("Final Status: {}", resultingStatus);
             flag.setStatus(resultingStatus);
         }

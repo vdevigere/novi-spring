@@ -6,10 +6,10 @@ import org.slf4j.LoggerFactory
 
 class FalseActivation(configuration: String) extends DslActivation(configuration) {
   private val logger = LoggerFactory.getLogger(classOf[FalseActivation])
-  override def apply(context: String): java.lang.Boolean = {
+  override def evaluate(context: String): java.lang.Boolean = {
     logger.debug("Always returning false: {}", context)
     false
   }
 
-  override def valueOf(s: String): BaseActivation[String] = FalseActivation(s)
+  override def apply(s: String): BaseActivation[String] = FalseActivation(s)
 }
