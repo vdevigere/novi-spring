@@ -1,6 +1,6 @@
 package org.novi.activations.dsl
 
-import org.novi.core.activations.BaseActivation
+import org.novi.core.activations.{BaseActivation, BaseActivationFactory}
 import org.novi.core.dsl.DslActivation
 import org.slf4j.LoggerFactory
 
@@ -18,6 +18,9 @@ class DynamicActivation(configuration: String = null) extends DslActivation(conf
     logger.debug("Context:{}", context)
     java.lang.Boolean.valueOf(context)
   }
+  override def apply(configuration: String): BaseActivation[String] = DynamicActivation.apply(configuration)
+}
 
-  override def apply(configuration: String): BaseActivation[String] = DynamicActivation(configuration)
+object DynamicActivation extends BaseActivationFactory[String]{
+  override def apply(configuration: String): BaseActivation[String] = new DynamicActivation(configuration)
 }
