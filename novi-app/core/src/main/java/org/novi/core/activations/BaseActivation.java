@@ -1,7 +1,5 @@
 package org.novi.core.activations;
 
-import org.novi.core.exceptions.ConfigurationParseException;
-
 public interface BaseActivation<T> extends BaseActivationFactory<T> {
 
     default String getName() {

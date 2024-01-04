@@ -27,7 +27,7 @@ class DSLTest {
     val bEval = !FalseActivation("False-1") & (FalseActivation("False-2") | TrueActivation("True-3"))
     assertThat(bEval.evaluate("World")).isTrue()
   }
-  
+
   @Test
   def testEvaluate5(): Unit = {
     val config =

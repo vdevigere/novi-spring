@@ -9,7 +9,7 @@ class DateTimeActivationTest {
   @Test
   @throws[ConfigurationParseException]
   @throws[ContextParseException]
-  private[activations] def evaluateForDateInBetween(): Unit = {
+  private def evaluateForDateInBetween(): Unit = {
     val dta: DateTimeActivation = new DateTimeActivation
     val result: Boolean = dta.apply(
       """
@@ -29,7 +29,7 @@ class DateTimeActivationTest {
   @Test
   @throws[ConfigurationParseException]
   @throws[ContextParseException]
-  private[activations] def evaluateForDateEqStartDate(): Unit = {
+  private def evaluateForDateEqStartDate(): Unit = {
     val dta: DateTimeActivation = new DateTimeActivation
     val result: Boolean = dta.apply(
       """
@@ -49,7 +49,7 @@ class DateTimeActivationTest {
   @Test
   @throws[ConfigurationParseException]
   @throws[ContextParseException]
-  private[activations] def evaluateForDateEqEndDate(): Unit = {
+  private def evaluateForDateEqEndDate(): Unit = {
     val dta: DateTimeActivation = new DateTimeActivation
     val result: Boolean = dta.apply(
       """
@@ -69,7 +69,7 @@ class DateTimeActivationTest {
   @Test
   @throws[ConfigurationParseException]
   @throws[ContextParseException]
-  private[activations] def evaluateForDateGtEndDate(): Unit = {
+  private def evaluateForDateGtEndDate(): Unit = {
     val dta: DateTimeActivation = new DateTimeActivation
     val result: Boolean = dta.apply(
       """
@@ -89,7 +89,7 @@ class DateTimeActivationTest {
   @Test
   @throws[ConfigurationParseException]
   @throws[ContextParseException]
-  private[activations] def evaluateForDateLtStartDate(): Unit = {
+  private def evaluateForDateLtStartDate(): Unit = {
     val dta: DateTimeActivation = new DateTimeActivation
     val result: Boolean = dta.apply(
       """

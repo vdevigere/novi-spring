@@ -18,9 +18,10 @@ class DynamicActivation(configuration: String = null) extends DslActivation(conf
     logger.debug("Context:{}", context)
     java.lang.Boolean.valueOf(context)
   }
+
   override def apply(configuration: String): BaseActivation[String] = DynamicActivation.apply(configuration)
 }
 
-object DynamicActivation extends BaseActivationFactory[String]{
+object DynamicActivation extends BaseActivationFactory[String] {
   override def apply(configuration: String): BaseActivation[String] = new DynamicActivation(configuration)
 }

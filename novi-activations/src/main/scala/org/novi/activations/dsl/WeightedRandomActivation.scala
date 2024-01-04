@@ -36,7 +36,7 @@ class WeightedRandomActivation(configuration: util.List[Pair[String, lang.Double
   override def apply(configuration: String): BaseActivation[util.List[Pair[String, lang.Double]]] = WeightedRandomActivation.apply(configuration)
 }
 
-object WeightedRandomActivation extends BaseActivationFactory[util.List[Pair[String, lang.Double]]]{
+object WeightedRandomActivation extends BaseActivationFactory[util.List[Pair[String, lang.Double]]] {
   override def apply(configuration: String): WeightedRandomActivation = {
     val variant_and_weights: util.List[Pair[String, lang.Double]] = if (configuration != null) {
       val tref: TypeReference[util.Map[String, lang.Double]] = new TypeReference[util.Map[String, lang.Double]]() {}

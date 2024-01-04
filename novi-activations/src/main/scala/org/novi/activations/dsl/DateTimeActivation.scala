@@ -43,8 +43,8 @@ class DateTimeActivation(configuration: DateRangeRecord) extends DslActivation(c
   override def apply(configuration: String): BaseActivation[DateRangeRecord] = DateTimeActivation.apply(configuration)
 }
 
-object DateTimeActivation extends BaseActivationFactory[DateRangeRecord]{
-  case class DateRangeRecord(startDateTime: util.Date, endDateTime:util.Date)
+object DateTimeActivation extends BaseActivationFactory[DateRangeRecord] {
+  case class DateRangeRecord(startDateTime: util.Date, endDateTime: util.Date)
 
   private val DATE_FORMAT = "dd-MM-yyyy hh:mm"
 
