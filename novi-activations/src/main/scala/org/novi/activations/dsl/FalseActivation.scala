@@ -17,5 +17,5 @@ class FalseActivation(configuration: String) extends DslActivation(configuration
 
 object FalseActivation extends BaseActivationFactory[String] {
 
-  override def apply(configuration: String): BaseActivation[String] = new FalseActivation(configuration)
+  override def apply(configuration: String): FalseActivation = new FalseActivation(configuration)
 }

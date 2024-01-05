@@ -17,5 +17,5 @@ class TrueActivation(configuration: String) extends DslActivation(configuration)
 
 object TrueActivation extends BaseActivationFactory[String] {
 
-  override def apply(configuration: String): BaseActivation[String] = new TrueActivation(configuration)
+  override def apply(configuration: String): TrueActivation = new TrueActivation(configuration)
 }

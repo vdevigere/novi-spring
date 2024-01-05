@@ -101,7 +101,7 @@ payload such as:-
 
 ```json
 {
-  "org.novi.activations.dsl.DateTimeActivation.currentDateTime": "15-12-2023 12:00"
+  "org.novi.activations.dsl.DateTimeActivation.currentDateTime": "15-12-2023 12:00",
   "org.novi.activations.dsl.WeightedRandomActivation": {
     "seed": 200,
     "variantToCheck": "SampleA"

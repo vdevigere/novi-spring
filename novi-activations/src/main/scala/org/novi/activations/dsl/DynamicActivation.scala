@@ -23,5 +23,5 @@ class DynamicActivation(configuration: String = null) extends DslActivation(conf
 }
 
 object DynamicActivation extends BaseActivationFactory[String] {
-  override def apply(configuration: String): BaseActivation[String] = new DynamicActivation(configuration)
+  override def apply(configuration: String): DynamicActivation = new DynamicActivation(configuration)
 }
